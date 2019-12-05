@@ -20,6 +20,7 @@ type redisConnector struct {
 
 type RedisCacher interface {
 	Ping() error
+	Close() error
 	GetObject(key string, f Unmarshal) error
 	RemoveObject(keys string) error
 	CreateObject(key string, bytes []byte, expirationTime time.Duration) error
@@ -46,6 +47,10 @@ func NewRedisConnector(connectionChain string) RedisCacher {
 		Addr: connectionChain,
 	})
 	return rConnector
+}
+
+func (r *redisConnector) Close() (err error) {
+	return r.conn.Close()
 }
 
 func (r *redisConnector) Ping() (err error) {
